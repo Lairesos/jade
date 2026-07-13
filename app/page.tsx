@@ -68,7 +68,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 flex justify-center p-8">
       <div className="w-full max-w-5xl rounded-3xl bg-zinc-900 p-8">
-
         <h1 className="text-5xl font-bold text-white">
           Jade
         </h1>
@@ -80,14 +79,9 @@ export default function Home() {
         <div className="mt-8 h-[450px] overflow-y-auto rounded-2xl bg-zinc-800 p-6 space-y-4">
 
           {mensagens.map((msg, index) => (
-
             <div
               key={index}
-              className={
-                msg.role === "user"
-                  ? "text-right"
-                  : "text-left"
-              }
+              className={msg.role === "user" ? "text-right" : "text-left"}
             >
               <div
                 className={
@@ -99,7 +93,6 @@ export default function Home() {
                 {msg.content}
               </div>
             </div>
-
           ))}
 
           {carregando && (
@@ -133,7 +126,6 @@ export default function Home() {
         >
           Enviar
         </button>
-
       </div>
     </main>
   );
