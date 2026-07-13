@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -10,7 +10,7 @@ type ChatMessage = {
 export default function Home() {
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
-
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mensagens, setMensagens] = useState<ChatMessage[]>([
     {
       role: "assistant",
@@ -29,8 +29,9 @@ export default function Home() {
     const historico = [...mensagens, novaMensagem];
 
     setMensagens(historico);
-    setMensagem("");
-    setCarregando(true);
+setMensagem("");
+textareaRef.current?.focus();
+setCarregando(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -105,15 +106,21 @@ export default function Home() {
 
         </div>
 
-        <textarea
-          value={mensagem}
-          onChange={(e) => setMensagem(e.target.value)}
+       <textarea
+  ref={textareaRef}
+  value={mensagem}
+  onChange={(e) => setMensagem(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              enviarMensagem();
-            }
-          }}
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    enviarMensagem();
+    return;
+  }
+
+  if (e.key === "Escape") {
+    setMensagem("");
+  }
+}}
           rows={4}
           placeholder="Digite sua mensagem..."
           className="mt-6 w-full rounded-xl bg-zinc-700 p-4 text-white outline-none"
