@@ -7,6 +7,7 @@ export default function Home() {
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
   
   const [conversas, setConversas] = useState([
   "Nova conversa",
@@ -37,7 +38,31 @@ export default function Home() {
 
   textareaRef.current?.focus();
 }
+function ouvir() {
+  const SpeechRecognition =
+    (window as any).SpeechRecognition ||
+    (window as any).webkitSpeechRecognition;
 
+  if (!SpeechRecognition) {
+    alert("Seu navegador não suporta reconhecimento de voz.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "pt-BR";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event: any) => {
+    setMensagem(event.results[0][0].transcript);
+    textareaRef.current?.focus();
+  };
+
+  recognition.start();
+
+  recognitionRef.current = recognition;
+}
   async function enviarMensagem() {
     if (!mensagem.trim() || carregando) return;
 
@@ -152,14 +177,22 @@ setCarregando(true);
           placeholder="Digite sua mensagem..."
           className="mt-6 w-full rounded-xl bg-zinc-700 p-4 text-white outline-none"
         />
+        <div className="mt-6 flex gap-3">
+  <button
+    onClick={ouvir}
+    className="flex h-14 w-14 items-center justify-center rounded-xl bg-zinc-700 text-2xl hover:bg-zinc-600"
+  >
+    🎤
+  </button>
 
-        <button
-          onClick={enviarMensagem}
-          disabled={carregando}
-          className="mt-6 w-full rounded-xl bg-emerald-500 py-4 text-xl font-bold text-white hover:bg-emerald-600"
-        >
-          Enviar
-        </button>
+  <button
+    onClick={enviarMensagem}
+    disabled={carregando}
+    className="flex-1 rounded-xl bg-emerald-500 py-4 text-xl font-bold text-white hover:bg-emerald-600"
+  >
+    Enviar
+  </button>
+</div>
             </div>
     </div>
   </main>
