@@ -1,22 +1,42 @@
 "use client";
 
 import { useRef, useState } from "react";
-
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
-
+import Sidebar from "./components/Sidebar";
+import type { ChatMessage } from "./types/conversation";
 export default function Home() {
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  const [conversas, setConversas] = useState([
+  "Nova conversa",
+]);
+
+  const [conversaAtiva, setConversaAtiva] = useState(0);
+
   const [mensagens, setMensagens] = useState<ChatMessage[]>([
+  
     {
       role: "assistant",
       content: "Olá, Laires! Eu sou a Jade. Como posso ajudar você hoje?",
     },
   ]);
+  function novaConversa() {
+  setConversas((anteriores) => [
+  ...anteriores,
+  `Nova conversa ${anteriores.length + 1}`,
+]);  
+  setMensagens([
+    {
+      role: "assistant",
+      content: "Olá, Laires! Eu sou a Jade. Como posso ajudar você hoje?",
+    },
+  ]);
+
+  setMensagem("");
+
+  textareaRef.current?.focus();
+}
 
   async function enviarMensagem() {
     if (!mensagem.trim() || carregando) return;
@@ -67,8 +87,15 @@ setCarregando(true);
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 flex justify-center p-8">
-      <div className="w-full max-w-5xl rounded-3xl bg-zinc-900 p-8">
+    <main className="min-h-screen bg-zinc-950 flex">
+<Sidebar
+  onNewChat={novaConversa}
+  conversations={conversas}
+  activeConversation={conversaAtiva}
+  onSelectConversation={setConversaAtiva}
+/>
+      <div className="flex-1 flex justify-center p-8">
+  <div className="w-full max-w-5xl rounded-3xl bg-zinc-900 p-8">
         <h1 className="text-5xl font-bold text-white">
           Jade
         </h1>
@@ -133,7 +160,8 @@ setCarregando(true);
         >
           Enviar
         </button>
-      </div>
-    </main>
+            </div>
+    </div>
+  </main>
   );
 }

@@ -2,7 +2,7 @@ import type { Conversation } from "../types/conversation";
 
 export const initialConversations: Conversation[] = [
   {
-    id: "1",
+    id: crypto.randomUUID(),
     title: "Nova conversa",
     messages: [
       {
@@ -12,13 +12,14 @@ export const initialConversations: Conversation[] = [
     ],
   },
 ];
-export function createConversation() {
+
+export function createConversation(): Conversation {
   return {
     id: crypto.randomUUID(),
     title: "Nova conversa",
     messages: [
       {
-        role: "assistant" as const,
+        role: "assistant",
         content: "Olá, Laires! Eu sou a Jade. Como posso ajudar você hoje?",
       },
     ],
