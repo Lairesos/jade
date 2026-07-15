@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { supabase } from "@/app/lib/supabase";
+// import { saveMemory } from "@/app/lib/memory";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -35,14 +37,17 @@ export async function POST(req: Request) {
       })),
     ];
 
+
     const response = await openai.responses.create({
       model: "gpt-5.5",
       input,
     });
 
+
     return NextResponse.json({
       reply: response.output_text,
     });
+
   } catch (error) {
     console.error(error);
 
