@@ -1,23 +1,16 @@
 import { supabase } from "./supabase";
 
-export async function saveMemory(
-  category: string,
-  title: string,
-  content: string
-) {
+export async function testSupabase() {
   const { data, error } = await supabase
     .from("memories")
-    .insert([
-      {
-        category,
-        title,
-        content,
-      },
-    ])
-    .select();
+    .select("*")
+    .limit(1);
 
-  console.log("MEMORY DATA:", data);
-  console.log("MEMORY ERROR:", error);
+  if (error) {
+    console.error("SUPABASE ERROR:", error);
+  } else {
+    console.log("SUPABASE OK:", data);
+  }
 
   return { data, error };
 }
