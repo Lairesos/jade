@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-import { supabase } from "@/app/lib/supabase";
-// import { saveMemory } from "@/app/lib/memory";
+import { saveMemory } from "@/app/lib/memory";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -37,23 +36,26 @@ export async function POST(req: Request) {
       })),
     ];
 
-
     const response = await openai.responses.create({
       model: "gpt-5.5",
       input,
     });
 
+    await saveMemory(
+      "teste",
+      "Primeira memória",
+      messages[messages.length - 1].content
+    );
 
     return NextResponse.json({
       reply: response.output_text,
     });
-
   } catch (error) {
-    console.error(error);
+    console.error("ERRO COMPLETO:", error);
 
     return NextResponse.json(
       {
-        error: "Erro ao conversar com a OpenAI.",
+        error: String(error),
       },
       {
         status: 500,

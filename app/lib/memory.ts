@@ -5,15 +5,19 @@ export async function saveMemory(
   title: string,
   content: string
 ) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("memories")
-    .insert({
-      category,
-      title,
-      content,
-    });
+    .insert([
+      {
+        category,
+        title,
+        content,
+      },
+    ])
+    .select();
 
-  if (error) {
-    console.error("Erro ao salvar memória:", error);
-  }
+  console.log("MEMORY DATA:", data);
+  console.log("MEMORY ERROR:", error);
+
+  return { data, error };
 }
